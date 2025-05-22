@@ -3,7 +3,7 @@
 // ======================================
 
 // General parameters
-$fn = 20;
+$fn = 100; // Set around 20 for dev
 depth = 3;
 
 // Radio face dimensions
@@ -25,7 +25,7 @@ screw_hole_inset = 4;
 
 // Knob parameters
 knob_hole_radius = 15;
-knob_y_position = plate_height / 2;
+knob_y_position = plate_height / 2 - 3; // knobs are not centered
 
 // Calculated knob positions
 left_knob_x = radio_face_padding - knob_hole_radius - depth;
@@ -34,7 +34,7 @@ right_knob_x = plate_width - radio_face_padding + knob_hole_radius + depth;
 // Plate support parameters
 support_height = 3;
 support_y_offset = -2;
-support_width = radio_face_width + (knob_hole_radius * 2) + (depth * 4);
+support_width = radio_face_width + (knob_hole_radius * 2) + (depth * 2);
 
 // Cup common parameters
 cup_wall_thickness = 2;
