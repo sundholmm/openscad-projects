@@ -21,7 +21,7 @@ radio_face_padding_vertical = (plate_height - radio_face_height) / 2;
 
 // Screw hole parameters
 screw_hole_radius = 1;
-screw_hole_inset = 4;
+screw_hole_inset = 5;
 
 // Knob parameters
 knob_hole_radius = 15;
@@ -112,10 +112,10 @@ difference() {
         cylinder(depth, knob_hole_radius, knob_hole_radius);
     
     // Screw holes
-    screw_hole(screw_hole_inset, screw_hole_inset);
+    screw_hole(screw_hole_inset - 3, screw_hole_inset);
     screw_hole(screw_hole_inset, plate_height - screw_hole_inset);
     screw_hole(plate_width - screw_hole_inset, screw_hole_inset);
-    screw_hole(plate_width - screw_hole_inset, plate_height - screw_hole_inset);
+    screw_hole(plate_width - screw_hole_inset + 3, plate_height - screw_hole_inset);
 }
 
 // Right plate edge
