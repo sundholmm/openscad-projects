@@ -12,7 +12,7 @@ radio_face_height = 47.2;
 
 // Plate dimensions
 plate_edge_width = 4;
-plate_width = 209; // 213 as plate_edge_width is added on both edges
+plate_width = 209; // actually 215 on top and 216 on bottom as edges are added
 plate_height = radio_face_height + 2;
 
 // Radio face paddings
@@ -20,21 +20,21 @@ radio_face_padding = (plate_width - radio_face_width) / 2;
 radio_face_padding_vertical = (plate_height - radio_face_height) / 2;
 
 // Screw hole parameters
-screw_hole_radius = 1;
-screw_hole_inset = 5;
+screw_hole_radius = 1.6;
+screw_hole_inset = 6;
 
 // Knob parameters
 knob_hole_radius = 15;
-knob_y_position = plate_height / 2 - 3; // knobs are not centered
+knob_y_position = plate_height / 2 - 1.8; // knobs are not centered
 
 // Calculated knob positions
-left_knob_x = radio_face_padding - knob_hole_radius - depth;
-right_knob_x = plate_width - radio_face_padding + knob_hole_radius + depth;
+left_knob_x = radio_face_padding - knob_hole_radius - depth - 1.6;
+right_knob_x = plate_width - radio_face_padding + knob_hole_radius + depth + 1.6;
 
 // Plate support parameters
-support_height = 3;
-support_y_offset = -2;
-support_width = radio_face_width + (knob_hole_radius * 2) + (depth * 2);
+support_height = 4;
+support_y_offset = -3;
+support_width = radio_face_width + (knob_hole_radius * 4) + (depth * 2) + 4;
 
 // Cup common parameters
 cup_wall_thickness = 2;
@@ -82,9 +82,9 @@ module screw_hole(x, y) {
 }
 
 // Create an angled edge
-module angled_edge(width, height, angle) {
+module angled_edge(width, height, angle, angled_edge_depth) {
     difference() {
-        cube([width, height, depth]);
+        cube([width, height, angled_edge_depth]);
         translate([0, 0, -0.2]) {
             rotate([0, 0, angle]) {
                 cube([64, 64, depth + 1]);
@@ -111,27 +111,37 @@ difference() {
     translate([right_knob_x, knob_y_position, 0]) 
         cylinder(depth, knob_hole_radius, knob_hole_radius);
     
-    // Screw holes
-    screw_hole(screw_hole_inset - 3, screw_hole_inset);
+    // Screw holes right
+    screw_hole(screw_hole_inset, screw_hole_inset);
     screw_hole(screw_hole_inset, plate_height - screw_hole_inset);
+    
+    // Screw holes left
     screw_hole(plate_width - screw_hole_inset, screw_hole_inset);
-    screw_hole(plate_width - screw_hole_inset + 3, plate_height - screw_hole_inset);
+    screw_hole(plate_width - screw_hole_inset, plate_height - screw_hole_inset);
 }
 
 // Right plate edge
-translate([plate_width, 0, 0]) 
-    angled_edge(plate_height, plate_height, -plate_edge_width);
+translate([-plate_edge_width - 3, 1, 0]) // Angle on right plate edge is less steep
+    minkowski() {
+    angled_edge(plate_edge_width + 3, plate_height - 2, 90 - plate_edge_width - 4, depth - 1);
+    cylinder(r=1);
+}
 
 // Left plate edge
-translate([-plate_edge_width, 0, 0]) 
-    angled_edge(plate_edge_width, plate_height, 90 - plate_edge_width);
+translate([plate_width + 2, 0, 0]) 
+    angled_edge(plate_height, plate_height, -plate_edge_width, depth);
+    
+// Left plate edge padding
+// Needed as there is more space on left than right
+translate([plate_width, 0, 0])
+    cube([2, plate_height, depth]);
 
 // ======================================
 // SUPPORT STRUCTURES
 // ======================================
 
 // Plate support
-translate([radio_face_padding - knob_hole_radius - depth, support_y_offset, 0]) 
+translate([radio_face_padding - knob_hole_radius * 2 - depth - 2, support_y_offset, 0]) 
     cube([support_width, support_height, depth]);
 
 // ======================================
